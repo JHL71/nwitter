@@ -1,6 +1,7 @@
 
 import { initializeApp } from "firebase/app";
-import * as fbAuth from"firebase/auth";
+import * as fbAuth from "firebase/auth";
+import * as fbfs from "firebase/firestore"; 
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -12,7 +13,6 @@ const firebaseConfig = {
 };
 
 export const app = initializeApp(firebaseConfig);
-export default fbAuth;
-// export const auth = getAuth();
-// export const createUser = createUserWithEmailAndPassword;
-// export const signIn = signInWithEmailAndPassword;
+
+export const db = fbfs.getFirestore(app);
+export { fbAuth, fbfs };

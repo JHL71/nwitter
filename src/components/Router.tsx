@@ -3,12 +3,14 @@ import Auth from "routes/Auth";
 import Home from "routes/Home";
 import Navigation from "components/Navigation";
 import Profile from "routes/Profile";
+import { fbAuth } from "fbase";
 
 interface AppRouterProps {
-  isLoggedIn: boolean
+  isLoggedIn: boolean,
+  userObj: fbAuth.User | null,
 }
 
-const AppRouter = ({ isLoggedIn }: AppRouterProps) => {
+const AppRouter = ({ isLoggedIn, userObj }: AppRouterProps) => {
   
   return (
     <Router>
@@ -17,7 +19,7 @@ const AppRouter = ({ isLoggedIn }: AppRouterProps) => {
         {isLoggedIn 
           ? 
             <>
-              <Route path="/" element={<Home />}/>
+              <Route path="/" element={<Home userObj={userObj} />}/>
               <Route path="/profile" element={<Profile />}/>
               <Route path="*" element={<Navigate to="/" replace />} />
             </> 

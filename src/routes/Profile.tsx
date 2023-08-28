@@ -1,4 +1,4 @@
-import fbAuth from "fbase";
+import { fbAuth } from "fbase";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 

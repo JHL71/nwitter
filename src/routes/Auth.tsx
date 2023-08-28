@@ -1,4 +1,4 @@
-import fbAuth from "fbase";
+import { fbAuth } from "fbase";
 import { AuthProvider } from "firebase/auth";
 import React, { useState } from "react";
 
