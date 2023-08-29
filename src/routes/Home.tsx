@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4} from "uuid";
-import { db, fbAuth, fbfs, storage, ref, uploadString, getDownloadURL } from "fbase";
+import { db, fbAuth, storage, ref, uploadString, getDownloadURL, DocumentData, collection, onSnapshot, addDoc } from "fbase";
 import Nweet from "components/Nweet";
 
 interface HomeProps {
   userObj: fbAuth.User
 }
 
-const nweetsRef = fbfs.collection(db, "nweets");
+const nweetsRef = collection(db, "nweets");
 
 const Home = ({ userObj }: HomeProps) => {
   const [nweet, setNweet] = useState("");
-  const [nweets, setNweets] = useState<fbfs.DocumentData[]>([]);
+  const [nweets, setNweets] = useState<DocumentData[]>([]);
   const [attachment, setAttachment] = useState<string|null>();
 
   useEffect(() => {
-    fbfs.onSnapshot(nweetsRef, (snapshot) => {
+    onSnapshot(nweetsRef, (snapshot) => {
       const newNweets = snapshot.docs.map((doc) => {
         return {
           id: doc.id,
@@ -33,13 +33,14 @@ const Home = ({ userObj }: HomeProps) => {
       await uploadString(attachmentRef, attachment as string, 'data_url');
       attachmentUrl  = await getDownloadURL(attachmentRef);
     }
-    const nweetObj: fbfs.DocumentData = {
+    const nweetObj: DocumentData = {
       text: nweet,
       createdAt: Date.now(),
       creatorId: userObj?.uid, 
       attachmentUrl
     }
-    await fbfs.addDoc(nweetsRef, nweetObj);
+    
+    await addDoc(nweetsRef, nweetObj);
     setNweet("");
     setAttachment("");
   }

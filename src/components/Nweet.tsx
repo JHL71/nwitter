@@ -1,9 +1,9 @@
-import { db, deleteObject, fbfs, ref, storage } from "fbase";
+import { db, deleteObject, ref, storage, DocumentData, doc, updateDoc, deleteDoc } from "fbase";
 import { useState } from "react";
 
 
 interface NweetProps {
-  nweetObj: fbfs.DocumentData,
+  nweetObj: DocumentData,
   isOwner: boolean
 }
 
@@ -15,8 +15,8 @@ const Nweet = ({ nweetObj, isOwner }: NweetProps) => {
   const onDeleteClick = async () => {
     const ok = window.confirm("Are you sure you want to delete this nweet?");
     if (ok) {
-      const docRef = fbfs.doc(db, `nweets/${nweetObj.id}`);
-      await fbfs.deleteDoc(docRef);
+      const docRef = doc(db, `nweets/${nweetObj.id}`);
+      await deleteDoc(docRef);
       const attachmentRef = ref(storage, nweetObj.attachmentUrl);
       await deleteObject(attachmentRef);
     }
@@ -27,8 +27,8 @@ const Nweet = ({ nweetObj, isOwner }: NweetProps) => {
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log(nweetObj, newNweet);
-    const docRef = fbfs.doc(db, `nweets/${nweetObj.id}`);
-    await fbfs.updateDoc(docRef, {
+    const docRef = doc(db, `nweets/${nweetObj.id}`);
+    await updateDoc(docRef, {
       text: newNweet
     });
     setEditing(false);

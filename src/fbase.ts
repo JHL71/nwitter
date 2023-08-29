@@ -1,7 +1,7 @@
 
 import { initializeApp } from "firebase/app";
 import * as fbAuth from "firebase/auth";
-import * as fbfs from "firebase/firestore"; 
+import { DocumentData, addDoc, collection, deleteDoc, doc, getFirestore, onSnapshot, updateDoc } from "firebase/firestore"; 
 import { deleteObject, getDownloadURL, getStorage, ref, uploadString } from "firebase/storage";
 
 const firebaseConfig = {
@@ -15,8 +15,21 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 
-export const db = fbfs.getFirestore(app);
+export const db = getFirestore(app);
 
 export const storage = getStorage(app);
 
-export { fbAuth, fbfs, ref, uploadString, getDownloadURL, deleteObject };
+export { 
+  fbAuth, 
+  type DocumentData,
+  collection,
+  onSnapshot,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  ref, 
+  uploadString, 
+  getDownloadURL, 
+  deleteObject 
+};
