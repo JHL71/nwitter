@@ -19,7 +19,7 @@ const AppRouter = ({ isLoggedIn, userObj }: AppRouterProps) => {
         {isLoggedIn 
           ? 
             <>
-              <Route path="/" element={<Home userObj={userObj} />}/>
+              <Route path="/" element={<Home userObj={userObj as fbAuth.User} />}/>
               <Route path="/profile" element={<Profile />}/>
               <Route path="*" element={<Navigate to="/" replace />} />
             </> 

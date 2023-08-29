@@ -1,9 +1,10 @@
-import Nweet from "components/Nweet";
-import { db, fbAuth, fbfs } from "fbase";
 import React, { useEffect, useState } from "react";
+import { v4 as uuidv4} from "uuid";
+import { db, fbAuth, fbfs, storage, ref, uploadString, getDownloadURL } from "fbase";
+import Nweet from "components/Nweet";
 
 interface HomeProps {
-  userObj: fbAuth.User | null
+  userObj: fbAuth.User
 }
 
 const nweetsRef = fbfs.collection(db, "nweets");
@@ -11,6 +12,8 @@ const nweetsRef = fbfs.collection(db, "nweets");
 const Home = ({ userObj }: HomeProps) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState<fbfs.DocumentData[]>([]);
+  const [attachment, setAttachment] = useState<string|null>();
+
   useEffect(() => {
     fbfs.onSnapshot(nweetsRef, (snapshot) => {
       const newNweets = snapshot.docs.map((doc) => {
@@ -24,17 +27,44 @@ const Home = ({ userObj }: HomeProps) => {
   }, [])
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await fbfs.addDoc(nweetsRef, {
+    let attachmentUrl = "";
+    if (attachment !== null && attachment !== "") {
+      const attachmentRef = ref(storage, `${userObj.uid}/${uuidv4()}`);
+      await uploadString(attachmentRef, attachment as string, 'data_url');
+      attachmentUrl  = await getDownloadURL(attachmentRef);
+    }
+    const nweetObj: fbfs.DocumentData = {
       text: nweet,
       createdAt: Date.now(),
       creatorId: userObj?.uid, 
-    });
+      attachmentUrl
+    }
+    await fbfs.addDoc(nweetsRef, nweetObj);
     setNweet("");
+    setAttachment("");
   }
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target : { value } } = event;
     setNweet(value);
   }
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { target: { files } } = event;
+    if (files) {
+      const theFile = files[0];
+      const reader = new FileReader();
+      reader.onloadend = (finishedEvent) => {
+        if (finishedEvent.target) {
+          const { target: { result } } = finishedEvent;
+          setAttachment(result as string);
+        }
+      }
+      reader.readAsDataURL(theFile);
+    }
+  }
+  const onClearAttachment = () => {
+    setAttachment(null);
+  }
+
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -45,7 +75,14 @@ const Home = ({ userObj }: HomeProps) => {
           placeholder="What's on your mind?" 
           maxLength={120} 
         />
+        <input type="file" accept="image/*" onChange={onFileChange}/>
         <input type="submit" value="Nweet" />
+        {attachment && (
+          <>
+            <img src={attachment} width="50px" height="50px" />
+            <button onClick={onClearAttachment}>Clear</button>
+          </>
+        )}
       </form>
       <div>
         {nweets.map((nweet) => {

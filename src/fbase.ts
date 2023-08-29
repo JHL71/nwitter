@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import * as fbAuth from "firebase/auth";
 import * as fbfs from "firebase/firestore"; 
+import { deleteObject, getDownloadURL, getStorage, ref, uploadString } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -15,4 +16,7 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 
 export const db = fbfs.getFirestore(app);
-export { fbAuth, fbfs };
+
+export const storage = getStorage(app);
+
+export { fbAuth, fbfs, ref, uploadString, getDownloadURL, deleteObject };
