@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4} from "uuid";
-import { db, fbAuth, storage, ref, uploadString, getDownloadURL, DocumentData, collection, onSnapshot, addDoc } from "fbase";
+import { db, storage, ref, uploadString, getDownloadURL, DocumentData, collection, onSnapshot, addDoc } from "fbase";
 import Nweet from "components/Nweet";
 
 interface HomeProps {
-  userObj: fbAuth.User
+  userObj: User
 }
 
 const nweetsRef = collection(db, "nweets");
@@ -12,7 +12,7 @@ const nweetsRef = collection(db, "nweets");
 const Home = ({ userObj }: HomeProps) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState<DocumentData[]>([]);
-  const [attachment, setAttachment] = useState<string|null>();
+  const [attachment, setAttachment] = useState<string>("");
 
   useEffect(() => {
     onSnapshot(nweetsRef, (snapshot) => {
@@ -28,7 +28,7 @@ const Home = ({ userObj }: HomeProps) => {
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     let attachmentUrl = "";
-    if (attachment !== null && attachment !== "") {
+    if (attachment !== "") {
       const attachmentRef = ref(storage, `${userObj.uid}/${uuidv4()}`);
       await uploadString(attachmentRef, attachment as string, 'data_url');
       attachmentUrl  = await getDownloadURL(attachmentRef);
@@ -59,11 +59,13 @@ const Home = ({ userObj }: HomeProps) => {
           setAttachment(result as string);
         }
       }
-      reader.readAsDataURL(theFile);
+      if (theFile) {
+        reader.readAsDataURL(theFile);
+      }
     }
   }
   const onClearAttachment = () => {
-    setAttachment(null);
+    setAttachment("");
   }
 
   return (
@@ -80,7 +82,7 @@ const Home = ({ userObj }: HomeProps) => {
         <input type="submit" value="Nweet" />
         {attachment && (
           <>
-            <img src={attachment} width="50px" height="50px" />
+            <img src={attachment} alt="nweet attachment" width="50px" height="50px" />
             <button onClick={onClearAttachment}>Clear</button>
           </>
         )}

@@ -1,7 +1,7 @@
 
 import { initializeApp } from "firebase/app";
 import * as fbAuth from "firebase/auth";
-import { DocumentData, addDoc, collection, deleteDoc, doc, getFirestore, onSnapshot, updateDoc } from "firebase/firestore"; 
+import { DocumentData, addDoc, collection, deleteDoc, doc, getDocs, getFirestore, onSnapshot, orderBy, query, updateDoc, where } from "firebase/firestore"; 
 import { deleteObject, getDownloadURL, getStorage, ref, uploadString } from "firebase/storage";
 
 const firebaseConfig = {
@@ -25,9 +25,13 @@ export {
   collection,
   onSnapshot,
   addDoc,
+  getDocs,
   updateDoc,
   deleteDoc,
   doc,
+  query,
+  where,
+  orderBy,
   ref, 
   uploadString, 
   getDownloadURL, 
