@@ -17,8 +17,10 @@ const Nweet = ({ nweetObj, isOwner }: NweetProps) => {
     if (ok) {
       const docRef = doc(db, `nweets/${nweetObj.id}`);
       await deleteDoc(docRef);
-      const attachmentRef = ref(storage, nweetObj.attachmentUrl);
-      await deleteObject(attachmentRef);
+      if (nweetObj.attachmentUrl) {
+        const attachmentRef = ref(storage, nweetObj.attachmentUrl);
+        await deleteObject(attachmentRef);
+      }
     }
   };
 
@@ -62,7 +64,7 @@ const Nweet = ({ nweetObj, isOwner }: NweetProps) => {
         : 
         <>
         <h4>{nweetObj.text}</h4>
-        {nweetObj.attachmentUrl && <img src={nweetObj.attachmentUrl} width="50px" height="50px" />}
+        {nweetObj.attachmentUrl && <img src={nweetObj.attachmentUrl} alt="attachment" width="50px" height="50px" />}
         {isOwner && 
           <>
             <button onClick={onDeleteClick}>Delete Nweet</button>

@@ -31,7 +31,9 @@ function App() {
           uid: user.uid,
           updateProfile: (args) => fbAuth.updateProfile(user, args)
         });
-      } 
+      } else {
+        setUserObj(null);
+      }
       setInit(true);
     })
   }, [])
