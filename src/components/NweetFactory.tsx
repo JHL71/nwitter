@@ -1,6 +1,9 @@
 import { addDoc, getDownloadURL, ref, storage, uploadString, DocumentData, collection, db } from "fbase";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import styles from "components/NweetFactory.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 interface NweetFactoryProps {
   userObj: User
@@ -14,6 +17,9 @@ const NweetFactory = ({ userObj }: NweetFactoryProps) => {
   
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (nweet === "") {
+      return ;
+    }
     let attachmentUrl = "";
     if (attachment !== "") {
       const attachmentRef = ref(storage, `${userObj.uid}/${uuidv4()}`);
@@ -51,28 +57,48 @@ const NweetFactory = ({ userObj }: NweetFactoryProps) => {
       }
     }
   }
-  const onClearAttachment = () => {
-    setAttachment("");
-  }
+  const onClearAttachment = () => setAttachment("");
 
 
   return (
     <>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} className={styles.form}>
+        <div className={styles.container}>
+          <input 
+            value={nweet}
+            onChange={onChange}
+            type="text" 
+            placeholder="What's on your mind?" 
+            maxLength={120} 
+            className={styles.input}
+          />
+          <input type="submit" value="&rarr;" className={styles.arrow}/>
+        </div>
+        <label htmlFor="attach-file" className={styles.lable}>
+          <span>Add photos</span>
+          <FontAwesomeIcon icon={faPlus} />
+        </label>
         <input 
-          value={nweet}
-          onChange={onChange}
-          type="text" 
-          placeholder="What's on your mind?" 
-          maxLength={120} 
+          id="attach-file"
+          type="file" 
+          accept="image/*" 
+          onChange={onFileChange}
+          className={styles.attach}
         />
-        <input type="file" accept="image/*" onChange={onFileChange}/>
-        <input type="submit" value="Nweet" />
         {attachment && (
-          <>
-            <img src={attachment} alt="nweet attachment" width="50px" height="50px" />
-            <button onClick={onClearAttachment}>Clear</button>
-          </>
+          <div className={styles.attachment}>
+            <img 
+              src={attachment} 
+              alt="nweet attachment"
+              style={{
+                backgroundImage: attachment
+              }}
+            />
+            <div onClick={onClearAttachment} className={styles.clear}>
+              <span>Remove</span>
+              <FontAwesomeIcon icon={faTimes} />
+            </div>
+          </div>
         )}
       </form>
     </>

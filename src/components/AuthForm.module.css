@@ -1,0 +1,40 @@
+.form {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 1px solid black;
+  text-align: center;
+  background-color: white;
+  color: black;
+}
+
+.submit {
+  text-align: center;
+  background: #04aaff;
+  color: white;
+  margin-top: 10px;
+}
+
+.span {
+  color: #04aaff;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 50px;
+  display: block;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
+.error {
+  color: tomato;
+  text-align: center;
+  font-weight: 500;
+  font-size: 12px;
+}

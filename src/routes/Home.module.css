@@ -1,0 +1,19 @@
+.wrap {
+  max-width: 890px;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.containter {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+.nweets {
+  margin-top: 30px;
+}

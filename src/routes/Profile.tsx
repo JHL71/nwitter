@@ -1,6 +1,7 @@
 import { collection, db, fbAuth, getDocs, orderBy, query, where } from "fbase";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "routes/Profile.module.css";
 
 interface ProfileProps {
   refreshUser: () => void,
@@ -17,12 +18,12 @@ const Profile = ({ refreshUser, userObj }: ProfileProps) => {
     navigate("/");
   }
 
-  const getMyNweets = useCallback(async () => {
+  const getMyNweets = async () => {
     const collectionRef = collection(db, "nweets");
     const q = query(collectionRef, where("creatorId", "==", userObj.uid), orderBy("createdAt", "desc"));
     const nweets = await getDocs(q);
     nweets.docs.forEach((doc) => console.log(doc.data()));
-  }, [userObj.uid]);
+  };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target: { value } } = event;
@@ -41,20 +42,33 @@ const Profile = ({ refreshUser, userObj }: ProfileProps) => {
 
   useEffect(() => {
     getMyNweets();
-  }, [getMyNweets])
+  }, [])
   return (
-    <>
-      <form onSubmit={onSubmit}>
-        <input
-          onChange={onChange} 
-          type="text" 
-          placeholder="Display name"
-          value={newDisplayName as string}
-        />
-        <input type="submit" value="Update Profile" />
-      </form>
-      <button onClick={onLogOutClick}>Log Out</button>
-    </>
+    <div className={styles.wrap}>
+      <div className={styles.container}>
+        <form onSubmit={onSubmit} className={styles.form}>
+          <input
+            onChange={onChange} 
+            type="text" 
+            autoFocus
+            placeholder="Display name"
+            value={newDisplayName as string}
+            className={styles.input}
+          />
+          <input 
+            type="submit" 
+            value="Update Profile" 
+            className={styles.btn}
+          />
+        </form>
+        <span 
+          onClick={onLogOutClick} 
+          className={`${styles.btn} ${styles.cancel} ${styles.logOut}`}
+        >
+          Log Out
+        </span>
+      </div>
+    </div>
   )
 }
 export default Profile;

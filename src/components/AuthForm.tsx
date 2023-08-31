@@ -1,5 +1,6 @@
 import { fbAuth } from "fbase";
 import { useState } from "react";
+import styles from "components/AuthForm.module.css";
 
 const AuthFrom = () => {
   const [email, setEmail] = useState("");
@@ -39,7 +40,7 @@ const AuthFrom = () => {
 
   return (
     <>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} className={styles.form}>
         <input 
           name="email" 
           type="email" 
@@ -47,6 +48,7 @@ const AuthFrom = () => {
           required 
           value={email} 
           onChange={onChange}
+          className={styles.input}
         />
         <input
           name="password" 
@@ -55,11 +57,18 @@ const AuthFrom = () => {
           required 
           value={password} 
           onChange={onChange}
+          className={styles.input}
         />
-        <input type="submit" value={newAccount ? "Create Account" : "Log In"} />
-        {error}
+        <input 
+          type="submit" 
+          value={newAccount ? "Create Account" : "Log In"} 
+          className={`${styles.submit} ${styles.input}`}
+        />
+        {error && <span className={styles.error}>{error}</span>}
       </form>
-      <span onClick={toggleAccount}>{newAccount ? "Sign In" : "Create Account"}</span>
+      <span onClick={toggleAccount} className={styles.span}>
+        {newAccount ? "Sign In" : "Create Account"}
+      </span>
     </>
   )
 }
