@@ -1,8 +1,9 @@
-import { db, deleteObject, ref, storage, DocumentData, doc, updateDoc, deleteDoc } from "fbase";
+import { db, deleteObject, ref, storage, doc, updateDoc, deleteDoc } from "fbase";
 import { useState } from "react";
 import styles from "components/Nweet.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { DocumentData } from "firebase/firestore";
 
 interface NweetProps {
   nweetObj: DocumentData,

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { db, DocumentData, collection, onSnapshot } from "fbase";
+import { db, collection, onSnapshot, fbAuth } from "fbase";
 import Nweet from "components/Nweet";
 import NweetFactory from "components/NweetFactory";
 import styles from "routes/Home.module.css";
+import { DocumentData } from "firebase/firestore";
 
 interface HomeProps {
-  userObj: User
+  userObj: User,
 }
 
 interface DocData {
@@ -21,14 +22,19 @@ const Home = ({ userObj }: HomeProps) => {
   const nweetsRef = collection(db, "nweets");
 
   useEffect(() => {
-   onSnapshot(nweetsRef, (snapshot) => {
-      const newNweets = snapshot.docs.map((doc) => {
-        return {
-          id: doc.id,
-          ...doc.data() as DocData,
-        }
-      }).sort((a, b) => b.createdAt - a.createdAt);
-      setNweets(newNweets);
+    const unsub = onSnapshot(nweetsRef, (snapshot) => {
+        const newNweets = snapshot.docs.map((doc) => {
+          return {
+            id: doc.id,
+            ...doc.data() as DocData,
+          }
+        }).sort((a, b) => b.createdAt - a.createdAt);
+        setNweets(newNweets);
+      });
+    fbAuth.onAuthStateChanged(fbAuth.getAuth(), (user) => {
+      if (user === null) {
+        unsub();
+      }
     })
   }, [nweetsRef])
 

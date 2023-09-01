@@ -5,10 +5,10 @@ import styles from "routes/Profile.module.css";
 
 interface ProfileProps {
   refreshUser: () => void,
-  userObj: User
+  userObj: User,
 }
 
-const Profile = ({ refreshUser, userObj }: ProfileProps) => {
+const Profile = ({ refreshUser, userObj}: ProfileProps) => {
   const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
   const navigate = useNavigate();
   

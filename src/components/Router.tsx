@@ -19,7 +19,14 @@ const AppRouter = ({ refreshUser, isLoggedIn, userObj }: AppRouterProps) => {
         {isLoggedIn 
           ? 
             <>
-              <Route path="/" element={<Home userObj={userObj as User} />}/>
+              <Route 
+                path="/" 
+                element={
+                  <Home 
+                    userObj={userObj as User} 
+                  />
+                }
+              />
               <Route 
                 path="/profile" 
                 element={

@@ -1,9 +1,10 @@
-import { addDoc, getDownloadURL, ref, storage, uploadString, DocumentData, collection, db } from "fbase";
+import { addDoc, getDownloadURL, ref, storage, uploadString, collection, db } from "fbase";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import styles from "components/NweetFactory.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { DocumentData } from "firebase/firestore";
 
 interface NweetFactoryProps {
   userObj: User
