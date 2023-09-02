@@ -6,6 +6,7 @@ declare global {
   interface User {
     displayName: string | null,
     uid: string,
+    photo: string | null,
     updateProfile: (args:User) => Promise<void>
   }
 }
@@ -19,6 +20,7 @@ function App() {
     setUserObj({
       displayName: user.displayName,
       uid: user.uid,
+      photo: user.photoURL,
       updateProfile: (args) => fbAuth.updateProfile(user, args)
     })
   };
@@ -29,6 +31,7 @@ function App() {
         setUserObj({
           displayName: user.displayName,
           uid: user.uid,
+          photo: user.photoURL,
           updateProfile: (args) => fbAuth.updateProfile(user, args)
         });
       } else {

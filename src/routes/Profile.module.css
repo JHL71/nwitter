@@ -52,3 +52,23 @@
 .logOut {
   margin-top: 50px;
 }
+
+.profile {
+  display: flex;
+}
+
+.img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
+}
+
+.imgInput {
+  width: 100%;
+  padding: 10px 20px;
+  border: 1px solid black;
+  text-align: center;
+  background-color: white;
+  color: black;
+  margin-bottom: 20px;
+}
