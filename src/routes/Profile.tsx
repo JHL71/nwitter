@@ -1,9 +1,8 @@
-import { collection, db, fbAuth, getDocs, getDownloadURL, orderBy, query, ref, storage, uploadString, where } from "fbase";
+import { collection, db, deleteObject, fbAuth, getDocs, getDownloadURL, orderBy, query, ref, storage, uploadString, where } from "fbase";
 import { DocumentData } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "routes/Profile.module.css";
-import { v4 as uuidv4 } from "uuid";
 
 interface ProfileProps {
   refreshUser: () => void,
@@ -11,7 +10,7 @@ interface ProfileProps {
 }
 
 const Profile = ({ refreshUser, userObj}: ProfileProps) => {
-  const [profileImg, setProfileImg] = useState("");
+  const [profileImg, setProfileImg] = useState(userObj.photo);
   const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
   const [nweets, setNweets] = useState<DocumentData[]>([]);
   const navigate = useNavigate();
@@ -37,25 +36,40 @@ const Profile = ({ refreshUser, userObj}: ProfileProps) => {
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     let profileImgUrl = "";
-    if (profileImg !== "") {
-      const profileImgRef = ref(storage, `${userObj.uid}/${uuidv4()}`);
-      await uploadString(profileImgRef, profileImg as string, 'data_url');
-      profileImgUrl  = await getDownloadURL(profileImgRef);
+    if (userObj.photo !== null && userObj.photo !== profileImg) {
+      const photoRef = ref(storage, `${userObj.uid}/profile`);
+      try {
+        await deleteObject(photoRef);
+      } catch (err) {
+        console.log(err);
+      }
+      await uploadString(photoRef, profileImg as string, 'data_url');
+      profileImgUrl  = await getDownloadURL(photoRef);
     }
-    if (userObj.displayName !== newDisplayName) {
+    if (userObj.displayName !== newDisplayName || userObj.photo !== profileImg) {
       await fbAuth.updateProfile(fbAuth.getAuth().currentUser as fbAuth.User, {
         displayName: newDisplayName,
-        photoURL: profileImgUrl
+        photoURL: profileImgUrl ? profileImgUrl : userObj.photo
       })
       refreshUser();
     }
-    setProfileImg("");
   }
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target: { files }} = event;
     if (files) {
-
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onloadend = (finishEvent) => {
+        if (finishEvent.target) {
+          const { target: { result } } = finishEvent;
+          setProfileImg(result as string);
+        }
+      }
+      if (file) {
+        reader.readAsDataURL(file)
+      }
+      
     }
   }
 
@@ -63,18 +77,19 @@ const Profile = ({ refreshUser, userObj}: ProfileProps) => {
   useEffect(() => {
     getMyNweets();
   }, [])
+
   return (
     <div className={styles.wrap}>
       <div className={styles.container}>
         <div className={styles.profile}>
-          <div>
-            written nweets {nweets.length} 
-          </div>
           <img 
-            src={userObj.photo || "undefined"} 
+            src={profileImg || "undefined"} 
             alt="profile" 
             className={styles.img}
-          />
+            />
+          <div className={styles.written}>
+            written nweets {nweets.length} 
+          </div>
         </div>
         <form onSubmit={onSubmit} className={styles.form}>
           <input 
